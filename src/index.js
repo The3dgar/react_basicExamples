@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Formulario from "./Formulario";
+import AppChildren from "./AppChildren";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Formulario></Formulario>
+    <AppChildren></AppChildren>
   </React.StrictMode>,
   document.getElementById("root")
 );
