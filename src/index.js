@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import AppChildren from "./AppChildren";
+import FetchExample from "./sections/FetchExample";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <AppChildren></AppChildren>
-  </React.StrictMode>,
+  // <React.StrictMode>
+    <FetchExample></FetchExample>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );
 
