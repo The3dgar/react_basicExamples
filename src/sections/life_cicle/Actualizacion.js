@@ -17,19 +17,31 @@ class ImagenesAnimales extends React.Component {
 
   state = {
     src: fotosAnimales[this.props.animal],
+    throwError: false,
   };
+
+  listenerWidth = () => {
+    console.log(document.body.clientWidth);
+  };
+
+  componentDidMount() {
+    // esto para el componentWillUnmount :)
+    // suele llamarse memory leak, cuando no se libera esta vinculacion
+    window.addEventListener("resize", this.listenerWidth);
+  }
 
   UNSAFE_componentWillReceiveProps = (nuevaProp) => {
     // ocurre solo cuando el componente recibe props
     // util cuando se usan las props para formar el state del componente
     // el UNSAFE_ es por que ya react no recomienda su uso
-    console.log("1.componentWillReceibeProps");
+    console.clear();
+    console.log("1.componentWillReceibeProps", nuevaProp, this.props);
     this.setState({
       src: fotosAnimales[nuevaProp.animal],
     });
   };
 
-  shouldComponentUpdate(nuevaProp, nuevoState){
+  shouldComponentUpdate(nuevaProp, nuevoState) {
     // se ejecuta antes de actualizar el componente
     // determina si el componente se debe actualizar o no
     // devuelve un boolean (por defecto true si no existe el metodo)
@@ -39,7 +51,7 @@ class ImagenesAnimales extends React.Component {
     // react detecta que no debe aplicar ningun cambio
     // pero si evalua, si hace la comparacion
     console.log("2.shouldComponentUpdate", nuevaProp, nuevoState);
-    return this.props.animal !== nuevaProp.animal
+    return this.props.animal !== nuevaProp.animal;
   }
 
   /**
@@ -47,20 +59,71 @@ class ImagenesAnimales extends React.Component {
    * en lugar de extends React.Component
    * se coloca
    * React.PureComponent
-   * 
+   *
    * y podemos saltarnos el shouldComponentUpdate
    * ya que haria esas validaciones automaticas
-   * 
+   *
    * sin embargo, puede dar falsos positivos para objetos
    * props de más de 1 nivel
    */
+  UNSAFE_componentWillUpdate(nuevaProp, nuevoState) {
+    // se ejecuta si es true del shouldComponentUpdate
+    // evitar setState, por que podria provocar un loop inf
+    // es usado para posibles animaciones, aunque esto lo podemos lograr
+    // moviendo las clases css
+    console.log("3.componentWillUpdate", nuevaProp, nuevoState);
+    // aun no se ejecuta el metodo render
+    // por ende podriamos capturar un cambio en el dom
+    const img = document.querySelector("img");
+    console.log("img vieja:", img.alt);
+    // web animations api
+    img.animate([{ filter: "blur(0px)" }, { filter: "blur(2px)" }], {
+      duration: 500,
+      easing: "ease",
+    });
+  }
+
+  componentDidUpdate(viejaProp, viejoState) {
+    // se ejecuta tras el render
+    // usa el nuevo dom
+    // no debe llamar al setState por loop infinito
+    console.log("4.componentDidUpdate", viejaProp, viejoState);
+    const img = document.querySelector("img");
+    img.animate([{ filter: "blur(2px)" }, { filter: "blur(0px)" }], {
+      duration: 1500,
+      easing: "ease",
+    });
+    console.log("img nueva:", img.alt);
+  }
+
+  componentWillUnmount() {
+    // se ejecuta solo si el componente deja de renderizarse
+    // solo tiene una fase
+    // no debe llamar al setState
+    // usos practicos:
+    /**
+     * 1. eliminar suscripciones del dom
+     * 2. cancelar peticiones a la red
+     * 3. limpiar datos, liberar recursos
+     */
+    console.log("5.componentWillUnmount");
+    window.removeEventListener("resize", this.listenerWidth);
+  }
+
+  lanzarError = () => {
+    this.setState({ throwError: true });
+  };
 
   render() {
     console.log("--> render");
+    if (this.state.throwError) {
+      throw new Error("Ups..! falla extrema");
+    }
+
     return (
       <div>
         <p>Animal seleccionado {this.props.animal}</p>
-
+        <button onClick={() => this.lanzarError()}> Error Custom </button>
         <img alt={this.props.animal} src={this.state.src} width="250" />
       </div>
     );
@@ -70,6 +133,9 @@ class ImagenesAnimales extends React.Component {
 export default class extends React.Component {
   state = {
     animal: "perro",
+    mostrarComponente: true,
+    hayError: false,
+    errorMsg: "",
   };
 
   renderAnimalitos = (animalito) => {
@@ -84,13 +150,53 @@ export default class extends React.Component {
     );
   };
 
+  componentDidCatch(error, info) {
+    // usado para recuperar el componente en caso de error
+    // se puede cambiar el state para cambiar el comporatamiento del componente
+    // tener en cuenta: captura los errores de los CHILDREN para evitar que se caiga todo el padre
+
+    // no captura errores en los metodos disparado por eventos
+    // si ocurre un error no controlado, se removera el componente
+
+    // los errores de react solo se ven en desarrollo
+    // en prod: solo se mostrara un console.log, y la app simplemente no funcionara
+    console.log("componentDidCatch", error, info);
+    this.setState({
+      hayError: true,
+      errorMsg: error.toString(),
+    });
+  }
+
   render() {
-    return (
-      <div>
-        <h4>Test de actualizacion - shouldComponentUpdate</h4>
-        {animales.map(this.renderAnimalitos)}
-        <ImagenesAnimales animal={this.state.animal}></ImagenesAnimales>
-      </div>
-    );
+    if (this.state.hayError) {
+      return (
+        <div>
+          <p>Hay errores en el boton</p>
+          <button onClick={()=> this.setState({hayError: false, errorMsg: ""})}>Volver atras</button>
+        </div>
+      );
+    }
+
+    if (this.state.mostrarComponente) {
+      return (
+        <div>
+          <h4>Test de actualizacion - shouldComponentUpdate</h4>
+          {animales.map(this.renderAnimalitos)}
+          <ImagenesAnimales animal={this.state.animal}></ImagenesAnimales>
+          <button onClick={() => this.setState({ mostrarComponente: false })}>
+            <span>Desmontar</span>
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p>Componente desmontado</p>
+          <button onClick={() => this.setState({ mostrarComponente: true })}>
+            <span>Montar</span>
+          </button>
+        </div>
+      );
+    }
   }
 }
