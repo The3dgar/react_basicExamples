@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import Ciclos from "./Ciclos";
+import PatronContenedorContenido from "./PatronContenedorContenido";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   // <React.StrictMode>
-    <Ciclos></Ciclos>,
+    <PatronContenedorContenido></PatronContenedorContenido>,
   // </React.StrictMode>,
   document.getElementById("root")
 );
