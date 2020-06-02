@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import FetchExample from "./sections/FetchExample";
+import Ciclos from "./Ciclos";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   // <React.StrictMode>
-    <FetchExample></FetchExample>,
+    <Ciclos></Ciclos>,
   // </React.StrictMode>,
   document.getElementById("root")
 );

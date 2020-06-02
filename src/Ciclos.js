@@ -1,5 +1,5 @@
 import React from "react";
-import Montaje from './sections/life_cicle/Montaje'
+import Actualizacion from "./sections/life_cicle/Actualizacion";
 
 export default class Ciclos extends React.Component {
   // 1.montaje
@@ -14,19 +14,19 @@ export default class Ciclos extends React.Component {
   */
 
   // constructor(props) {
-    // es el primero en ejecutarse
-    //este metodo llama al contructor de Component
-    // super(props) 
+  // es el primero en ejecutarse
+  //este metodo llama al contructor de Component
+  // super(props)
 
-    // aqui se inicializa el state del componente
-    //  por ende no se debe llamar al setState
-    // this.state = {
-    //   mensajeInicial : "Hola mundo inicial"
-    // }
+  // aqui se inicializa el state del componente
+  //  por ende no se debe llamar al setState
+  // this.state = {
+  //   mensajeInicial : "Hola mundo inicial"
+  // }
 
-    // aqui tambien se enlaza el contexto(this) a los metodos que necesitan acceder a las propiedades del componente
-    // ej: usado para los metodos que manejan eventos
-    // this.handleClick = this.handleClick.bind(this)
+  // aqui tambien se enlaza el contexto(this) a los metodos que necesitan acceder a las propiedades del componente
+  // ej: usado para los metodos que manejan eventos
+  // this.handleClick = this.handleClick.bind(this)
   // }
 
   /* 
@@ -40,7 +40,7 @@ export default class Ciclos extends React.Component {
   render() {
     return (
       <div>
-        <Montaje></Montaje>
+        <Actualizacion></Actualizacion>
       </div>
     );
   }
