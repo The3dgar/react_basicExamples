@@ -23,14 +23,40 @@ class ImagenesAnimales extends React.Component {
     // ocurre solo cuando el componente recibe props
     // util cuando se usan las props para formar el state del componente
     // el UNSAFE_ es por que ya react no recomienda su uso
-    console.log("setState");
+    console.log("1.componentWillReceibeProps");
     this.setState({
       src: fotosAnimales[nuevaProp.animal],
     });
   };
 
+  shouldComponentUpdate(nuevaProp, nuevoState){
+    // se ejecuta antes de actualizar el componente
+    // determina si el componente se debe actualizar o no
+    // devuelve un boolean (por defecto true si no existe el metodo)
+    // no se debe llamar a setState
+
+    // no se ve ningun tipo de refrescamiento en el dom
+    // react detecta que no debe aplicar ningun cambio
+    // pero si evalua, si hace la comparacion
+    console.log("2.shouldComponentUpdate", nuevaProp, nuevoState);
+    return this.props.animal !== nuevaProp.animal
+  }
+
+  /**
+   * PureComponent
+   * en lugar de extends React.Component
+   * se coloca
+   * React.PureComponent
+   * 
+   * y podemos saltarnos el shouldComponentUpdate
+   * ya que haria esas validaciones automaticas
+   * 
+   * sin embargo, puede dar falsos positivos para objetos
+   * props de más de 1 nivel
+   */
+
   render() {
-    console.log("render");
+    console.log("--> render");
     return (
       <div>
         <p>Animal seleccionado {this.props.animal}</p>
@@ -49,7 +75,7 @@ export default class extends React.Component {
   renderAnimalitos = (animalito) => {
     return (
       <button
-        disabled={animalito === this.state.animal}
+        // disabled={animalito === this.state.animal}
         key={animalito}
         onClick={() => this.setState({ animal: animalito })}
       >
@@ -61,7 +87,7 @@ export default class extends React.Component {
   render() {
     return (
       <div>
-        <h4>Test de actualizacion</h4>
+        <h4>Test de actualizacion - shouldComponentUpdate</h4>
         {animales.map(this.renderAnimalitos)}
         <ImagenesAnimales animal={this.state.animal}></ImagenesAnimales>
       </div>
