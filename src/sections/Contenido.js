@@ -1,23 +1,19 @@
-import React from 'react'
+import React from "react";
 // ejemplo de contedor-contenido
-export default class BitCoinPrice extends React.Component{
-  
-  _renderCurrencies() {
-    const { bpi } = this.props;
-    const currencies = Object.keys(bpi)
-    return currencies.map((currency) => (
-        <div key={currency}>
-            1 BTC is {bpi[currency].rate} <span>{currency}</span>
-        </div>
-    ))
-  }
+// export default class BitCoinPrice extends React.Component{
 
-  render() {
-    return(
-      <div>
-        <h4>BitcoinPrice Index</h4>
-        {this._renderCurrencies()}
-      </div>
-    )
-  }
-}
+const _renderCurrencies = (bpi) =>
+  Object.keys(bpi).map((currency) => (
+    <div key={currency}>
+      1 BTC is {bpi[currency].rate} <span>{currency}</span>
+    </div>
+  ));
+
+const BitCoinPrice = ({ bpi }) => (
+  <div>
+    <h4>BitcoinPrice Index</h4>
+    {_renderCurrencies(bpi)}
+  </div>
+);
+
+export default BitCoinPrice;
